@@ -164,6 +164,27 @@ You can customize execution parameters inside [`.github/workflows/traingrid.yml`
 
 ---
 
+## Technical Notes & Kaggle CLI Reproducibility
+
+If you are developing or maintaining Kaggle automation pipelines, keep these key points in mind:
+
+### 1. Kaggle CLI Dual-Credential Support (`kaggle.json` vs `access_token`)
+- **Legacy Kaggle CLI (`<2.0.0`)**: Required a JSON file at `~/.kaggle/kaggle.json` with `{"username": "...", "key": "..."}`.
+- **Modern Kaggle CLI (`>=2.0.0`)**: Now expects a raw token file at `~/.kaggle/access_token` or the environment variable `KAGGLE_API_TOKEN`.
+- **How TrainGrid solves this**: `traingrid-action` automatically provisions **both** credential formats and exports `KAGGLE_API_TOKEN`, ensuring full backward and forward compatibility regardless of the Kaggle CLI version installed.
+
+### 2. Upstream Bug Fixes in `traingrid-action`
+Standard third-party actions frequently fail on modern runners due to two upstream issues:
+1. **Missing `six` dependency in `kaggle 2.2.5+`**: The newest CLI release imports `six` internally without bundling it. TrainGrid explicitly installs `kaggle six` during environment setup to prevent runtime crashes.
+2. **Case-insensitive status polling**: Newer Kaggle CLI versions report completion as `KernelWorkerStatus.COMPLETE` instead of lowercase `"complete"`. TrainGrid's polling engine uses regex matching (`=~ [Cc][Oo][Mm][Pp][Ll][Ee][Tt][Ee]`), preventing runners from hanging in infinite loops.
+
+---
+| `sleep_time` | number | `15` | Polling interval (seconds) to check execution status |
+| `dataset_sources` | string | `""` | Kaggle datasets to mount: `{username}/{dataset-slug}` |
+| `competition_sources` | string | `""` | Competition datasets to mount |
+
+---
+
 ## Author & License
 
 - **Author:** Tanvir Kabir Shaon
