@@ -1,0 +1,25 @@
+name: Kaggle System Report
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  system_report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run Kaggle System Report
+        uses: KevKibe/kaggle-script-action@v1.0.5
+        with:
+          username: ${{ secrets.KAGGLE_USERNAME }}
+          key: ${{ secrets.KAGGLE_KEY }}
+          title: "TrainGrid System Report"
+          custom_script: "python src/system_report.py"
+          enable_gpu: false
+          enable_internet: true
+          sleep_time: 15

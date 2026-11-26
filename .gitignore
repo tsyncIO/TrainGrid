@@ -1,0 +1,19 @@
+# Environment & secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Training artifacts
+outputs/
+checkpoints/
+logs/
+*.mp4
+*.gif
+
+# OS
+.DS_Store
